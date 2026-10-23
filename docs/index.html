@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>opencode-google-drive — Google Drive &amp; Docs for OpenCode V2</title>
+<meta name="description" content="A global OpenCode V2 plugin for Google Drive and Google Docs: search, read, create, append and replace documents.">
+<style>
+  :root {
+    --bg: #0b0d10;
+    --panel: #12161b;
+    --line: #232a33;
+    --text: #e7ecf2;
+    --muted: #98a4b3;
+    --blue: #4c8dff;
+    --green: #34c759;
+    --yellow: #f5c542;
+    --red: #ff5f57;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13.5px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    padding: 88px 0 56px;
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(600px 240px at 20% -10%, rgba(76,141,255,.18), transparent 70%),
+      radial-gradient(500px 220px at 80% 0%, rgba(52,199,89,.10), transparent 70%);
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); }
+  h1 { margin: 18px 0 12px; font-size: clamp(32px, 5vw, 52px); line-height: 1.1; letter-spacing: -.02em; }
+  h1 span { color: var(--blue); }
+  .lede { max-width: 640px; margin: 0; color: var(--muted); font-size: 18px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 999px; font-weight: 600; font-size: 14px;
+    border: 1px solid var(--line); color: var(--text); background: var(--panel);
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); border-color: #3a4552; }
+  .btn.primary { background: var(--blue); border-color: var(--blue); color: #06101f; }
+
+  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  h2 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 22px; }
+  h3 { font-size: 17px; margin: 0 0 6px; }
+  p { color: var(--muted); }
+
+  .steps { display: grid; gap: 18px; }
+  .step {
+    display: grid; grid-template-columns: 34px 1fr; gap: 16px; align-items: start;
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px;
+  }
+  .num {
+    width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    background: rgba(76,141,255,.14); color: var(--blue); font-weight: 700; font-size: 14px;
+  }
+  .code {
+    position: relative; margin-top: 10px; background: #0a0c0f; border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 44px 12px 14px; overflow-x: auto; color: #d7e0ea;
+  }
+  .code button {
+    position: absolute; top: 8px; right: 8px; border: 1px solid var(--line); background: #161b21;
+    color: var(--muted); border-radius: 7px; padding: 4px 9px; font-size: 11px; cursor: pointer;
+  }
+  .code button:hover { color: var(--text); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px;
+  }
+  .card code { color: var(--blue); }
+  .card p { margin: 4px 0 0; font-size: 14px; }
+
+  .note {
+    display: grid; grid-template-columns: 4px 1fr; gap: 16px;
+    background: rgba(245,197,66,.06); border: 1px solid rgba(245,197,66,.25);
+    border-radius: var(--radius); padding: 18px 20px;
+  }
+  .note::before { content: ""; border-radius: 4px; background: var(--yellow); }
+  .note strong { color: var(--yellow); }
+  .note p { margin: 6px 0 0; }
+
+  footer { padding: 36px 0 56px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+  @media (max-width: 560px) { header { padding-top: 56px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span> OpenCode V2 plugin</div>
+    <h1>Google Drive &amp; Docs<br><span>inside OpenCode</span></h1>
+    <p class="lede">Search, read, create and edit Google Docs without leaving your session. One OAuth login, tokens refreshed and stored locally.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://github.com/dulumina/opencode-Gdocs">View on GitHub</a>
+      <a class="btn" href="#install">Install</a>
+    </div>
+  </div>
+</header>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h3>Create a Desktop OAuth client</h3>
+          <p>In Google Cloud Console, create a Desktop app OAuth client, download the client JSON, and enable the Drive and Docs APIs.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h3>Run the installer</h3>
+          <p>Copies the plugin and client JSON into your global OpenCode config.</p>
+          <div class="code"><button data-copy>Copy</button><code>git clone https://github.com/dulumina/opencode-Gdocs.git
+cd opencode-Gdocs
+./install.sh /path/to/client_secret.json</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h3>Install dependencies and authorize</h3>
+          <div class="code"><button data-copy>Copy</button><code>cd ~/.config/opencode && bun install</code></div>
+          <p>Restart OpenCode, then ask it to run <code>google_auth</code>. The browser opens Google's consent page once.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Tools</h2>
+    <div class="grid">
+      <div class="card"><h3><code>google_auth</code></h3><p>Connect through Google OAuth.</p></div>
+      <div class="card"><h3><code>google_auth_status</code></h3><p>Check the saved connection.</p></div>
+      <div class="card"><h3><code>google_drive_search</code></h3><p>Search Drive by file name or text.</p></div>
+      <div class="card"><h3><code>google_drive_list</code></h3><p>List recent files, optionally by folder.</p></div>
+      <div class="card"><h3><code>google_drive_read</code></h3><p>Read Docs and plain-text files.</p></div>
+      <div class="card"><h3><code>google_docs_create</code></h3><p>Create a document with initial text.</p></div>
+      <div class="card"><h3><code>google_docs_append</code></h3><p>Append text to an existing document.</p></div>
+      <div class="card"><h3><code>google_docs_replace</code></h3><p>Replace a document's full text.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Auth lifetime</h2>
+    <div class="note">
+      <div>
+        <strong>Testing mode expires tokens every 7 days.</strong>
+        <p>While the OAuth consent screen is in Testing, Google expires refresh tokens after a week. Publish the app (Google Auth Platform → Audience → Publish app) and authorize once more to get a long-lived token. Unverified apps show a warning and are capped at 100 users — fine for personal use.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;width:100%">
+    <span>MIT-free, no build step. Requires OpenCode V2.</span>
+    <a href="https://github.com/dulumina/opencode-Gdocs">github.com/dulumina/opencode-Gdocs</a>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const text = button.parentElement.querySelector("code").textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = "Copied";
+        setTimeout(() => (button.textContent = "Copy"), 1500);
+      } catch {
+        button.textContent = "Select";
+      }
+    });
+  });
+</script>
+</body>
+</html>
