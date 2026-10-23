@@ -2,6 +2,8 @@
 
 A global [OpenCode V2](https://opencode.ai/v2/docs/build/plugins) plugin for Google Drive and Google Docs.
 
+**Site:** https://dulumina.github.io/opencode-Gdocs/
+
 > Requires OpenCode V2. V1 plugins do not run in V2; this plugin uses the V2 `Plugin.define` API.
 
 ## Google Cloud setup
