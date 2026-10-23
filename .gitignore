@@ -1,0 +1,4 @@
+node_modules/
+google-drive-token.json
+google-drive-client.json
+*.bak.*

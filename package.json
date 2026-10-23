@@ -1,0 +1,9 @@
+{
+  "name": "opencode-google-drive-global",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@opencode/plugin": "^2.0.28",
+    "googleapis": "^186.0.0"
+  }
+}
